@@ -1,4 +1,5 @@
 require "active_support/core_ext/module/delegation"
+require "concurrent/promise"
 
 class ActiveStorage::Service::MirrorService < ActiveStorage::Service
   attr_reader :primary, :mirrors
@@ -32,9 +33,9 @@ class ActiveStorage::Service::MirrorService < ActiveStorage::Service
     end
 
     def perform_across_services(method, *args)
-      # FIXME: Convert to be threaded
-      each_service.collect do |service|
-        service.public_send method, *args
+      promises = services.collect do |service|
+        Concurrent::Promise.execute { service.public_send method, *args }
       end
+      Concurrent::Promise.zip(*promises).value
     end
 end
