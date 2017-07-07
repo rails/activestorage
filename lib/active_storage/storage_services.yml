@@ -21,7 +21,7 @@ google:
   keyfile: <%= Rails.root.join("path/to/gcs.keyfile") %>
   bucket: your_own_bucket
 
+# The first child service will be the primary that supplies files on read
 mirror:
   service: Mirror
-  primary: local
-  secondaries: [ amazon, google ]
+  child_services: [ local, amazon, google ]
