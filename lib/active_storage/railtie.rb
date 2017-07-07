@@ -1,4 +1,5 @@
 require "rails/railtie"
+require "rails/engine"
 
 module ActiveStorage
   class Engine < Rails::Engine # :nodoc:
