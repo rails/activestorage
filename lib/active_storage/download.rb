@@ -1,23 +1,9 @@
 class ActiveStorage::Download
-  # Sending .ai files as application/postscript to Safari opens them in a blank, grey screen.
-  # Downloading .ai as application/postscript files in Safari appends .ps to the extension.
-  # Sending HTML, SVG, XML and SWF files as binary closes XSS vulnerabilities.
-  # Sending JS files as binary avoids InvalidCrossOriginRequest without compromising security.
-  CONTENT_TYPES_TO_RENDER_AS_BINARY = %w(
-    text/html
-    text/javascript
-    image/svg+xml
-    application/postscript
-    application/x-shockwave-flash
-    text/xml
-    application/xml
-    application/xhtml+xml
-  )
-
   BINARY_CONTENT_TYPE = 'application/octet-stream'
 
-  def initialize(stored_file)
+  def initialize(stored_file, allowed_streamable_content_types)
     @stored_file = stored_file
+    @allowed_streamable_content_types = allowed_streamable_content_types
   end
 
   def headers(force_attachment: false)
@@ -36,10 +22,10 @@ class ActiveStorage::Download
     end
 
     def content_type
-      if @stored_file.content_type.in? CONTENT_TYPES_TO_RENDER_AS_BINARY
-        BINARY_CONTENT_TYPE
-      else
+      if @stored_file.content_type.in? @allowed_streamable_content_types
         @stored_file.content_type
+      else
+        BINARY_CONTENT_TYPE
       end
     end
 
