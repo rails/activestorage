@@ -1,7 +1,7 @@
 require "rails/railtie"
 
 module ActiveStorage
-  class Engine < Rails::Engine # :nodoc:
+  class Railtie < Rails::Railtie # :nodoc:
     config.active_storage = ActiveSupport::OrderedOptions.new
 
     config.eager_load_namespaces << ActiveStorage
