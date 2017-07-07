@@ -38,8 +38,23 @@ module ActiveStorage
 
           if service_configuration = configs[config_choice.to_s].symbolize_keys
             service_name = service_configuration.delete(:service)
+            child_services = service_configuration.delete(:child_services)
 
-            ActiveStorage::Blob.service = ActiveStorage::Service.configure(service_name, service_configuration)
+            if child_services.nil?
+              ActiveStorage::Blob.service = ActiveStorage::Service.configure(service_name, service_configuration)
+            else
+              services = []
+              child_services.each do |child_service|
+                if child_service_configuration = configs[child_service.to_s].symbolize_keys
+                  child_service_name = child_service_configuration.delete(:service)
+                  child_service = ActiveStorage::Service.configure(child_service_name, child_service_configuration)
+                  services << child_service
+                else
+                  raise "Couldn't configure Active Storage as #{child_service} was not found in #{config_file}"
+                end
+              end
+              ActiveStorage::Blob.service = ActiveStorage::Service.configure(service_name, service_configuration.merge(services: services))
+            end
           else
             raise "Couldn't configure Active Storage as #{config_choice} was not found in #{config_file}"
           end
