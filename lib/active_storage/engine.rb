@@ -11,7 +11,7 @@ module ActiveStorage
 
       config.after_initialize do |app|
         app.routes.prepend do
-          get "/rails/blobs/:encoded_key" => "active_storage/disk#show", as: :rails_disk_blob
+          eval(File.read(File.expand_path("../routes.rb", __FILE__)))
         end
       end
     end
