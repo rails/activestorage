@@ -8,6 +8,7 @@ require "active_storage"
 
 require "active_storage/service"
 ActiveStorage::Blob.service = ActiveStorage::Service.configure(:Disk, root: File.join(Dir.tmpdir, "active_storage"))
+ActiveStorage::Service.logger = Logger.new(STDOUT)
 
 require "active_storage/verified_key_with_expiration"
 ActiveStorage::VerifiedKeyWithExpiration.verifier = ActiveSupport::MessageVerifier.new("Testing")

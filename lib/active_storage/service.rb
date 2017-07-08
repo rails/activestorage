@@ -2,6 +2,8 @@
 class ActiveStorage::Service
   class ActiveStorage::IntegrityError < StandardError; end
 
+  class_attribute :logger
+
   def self.configure(service, **options)
     begin
       require "active_storage/service/#{service.to_s.downcase}_service"
@@ -29,6 +31,10 @@ class ActiveStorage::Service
   end
 
   def url(key, expires_in:, disposition:, filename:)
+    raise NotImplementedError
+  end
+
+  def url_for_direct_upload(key, expires_in:, content_type:, content_length:)
     raise NotImplementedError
   end
 end

@@ -10,12 +10,15 @@ class ActiveStorage::Service::S3Service < ActiveStorage::Service
   end
 
   def upload(key, io, checksum: nil)
+    logger.info "Uploading to #{key} (checksum: #{checksum})"
     object_for(key).put(body: io, content_md5: checksum)
   rescue Aws::S3::Errors::BadDigest
     raise ActiveStorage::IntegrityError
   end
 
   def download(key)
+    logger.info "Downloading #{key}"
+
     if block_given?
       stream(key, &block)
     else
@@ -24,6 +27,7 @@ class ActiveStorage::Service::S3Service < ActiveStorage::Service
   end
 
   def delete(key)
+    logger.info "Deleting #{key}"
     object_for(key).delete
   end
 
@@ -32,8 +36,14 @@ class ActiveStorage::Service::S3Service < ActiveStorage::Service
   end
 
   def url(key, expires_in:, disposition:, filename:)
+    logger.info "Generating url for #{key}"
     object_for(key).presigned_url :get, expires_in: expires_in,
       response_content_disposition: "#{disposition}; filename=\"#{filename}\""
+  end
+
+  def url_for_direct_upload(key, expires_in:, content_type:, content_length:)
+    logger.info "Generating direct upload url for #{key}"
+    object_for(key).presigned_url :put, expires_in: expires_in, content_type: content_type, content_length: content_length
   end
 
   private
