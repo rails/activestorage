@@ -6,8 +6,8 @@ require "byebug"
 
 require "active_storage"
 
-require "active_storage/service"
-ActiveStorage::Blob.service = ActiveStorage::Service.configure(:test, test: { service: 'Disk', root: File.join(Dir.tmpdir, "active_storage") })
+require "active_storage/service/disk_service"
+ActiveStorage::Blob.service = ActiveStorage::Service::DiskService.new(root: File.join(Dir.tmpdir, "active_storage"))
 ActiveStorage::Service.logger = Logger.new(STDOUT)
 
 require "active_storage/verified_key_with_expiration"
