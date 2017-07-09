@@ -1,3 +1,5 @@
+require_relative "log_subscriber"
+
 # Abstract class serving as an interface for concrete services.
 #
 # The available services are:
@@ -79,4 +81,16 @@ class ActiveStorage::Service
   def url_for_direct_upload(key, expires_in:, content_type:, content_length:)
     raise NotImplementedError
   end
+
+  private
+    def instrument(operation, key, payload = {}, &block)
+      ActiveSupport::Notifications.instrument(
+        "service_#{operation}.active_storage", 
+        payload.merge(key: key, service: service_name), &block)
+    end
+
+    def service_name
+      # ActiveStorage::Service::DiskService => Disk
+      self.class.name.split("::").third.remove("Service")
+    end
 end

@@ -10,7 +10,7 @@ module ActiveStorage
       require "active_storage/service"
 
       config.after_initialize do |app|
-        ActiveStorage::Service.logger = Rails.logger
+        ActiveStorage::Service.logger = app.config.active_storage.logger || Rails.logger
       end
     end
 
