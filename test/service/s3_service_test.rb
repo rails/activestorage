@@ -4,7 +4,7 @@ require "uri"
 
 if SERVICE_CONFIGURATIONS[:s3]
   class ActiveStorage::Service::S3ServiceTest < ActiveSupport::TestCase
-    SERVICE = ActiveStorage::Service.configure(:S3, SERVICE_CONFIGURATIONS[:s3])
+    SERVICE = ActiveStorage::Service.configure(:s3, SERVICE_CONFIGURATIONS)
 
     include ActiveStorage::Service::SharedServiceTests
 
@@ -12,7 +12,7 @@ if SERVICE_CONFIGURATIONS[:s3]
       begin
         key  = SecureRandom.base58(24)
         data = "Something else entirely!"
-        direct_upload_url = @service.url_for_direct_upload(key, expires_in: 5.minutes, content_type: "text/plain")
+        direct_upload_url = @service.url_for_direct_upload(key, expires_in: 5.minutes, content_type: "text/plain", content_length: data.size)
         
         url   = URI.parse(direct_upload_url).to_s.split("?").first
         query = CGI::parse(URI.parse(direct_upload_url).query).collect { |(k, v)| [ k, v.first ] }.to_h
