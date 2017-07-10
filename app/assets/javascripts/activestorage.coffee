@@ -8,9 +8,11 @@
 
   setSgid: (input, response) =>
     form = input.parentNode
+    input.setAttribute('disabled', true)
+
     sgidInput = document.createElement('input')
     sgidInput.setAttribute('type', 'hidden')
-    sgidInput.setAttribute('name', 'sgid')
+    sgidInput.setAttribute('name', input.name)
     sgidInput.setAttribute('value', response.sgid)
     form.appendChild(sgidInput)
 
