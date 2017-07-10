@@ -2,7 +2,6 @@
 #= export ActiveStorage
 #= require spark-md5
 
-
 @ActiveStorage =
   directUploadSelector: 'input[data-direct-upload]'
   directUploadButtonSelector: 'input[type=submit]'
@@ -33,10 +32,10 @@
     spark = new (SparkMD5.ArrayBuffer)
     fileReader = new FileReader
 
-    data = new FormData
-    data.append 'blob[filename]', file.name
-    data.append 'blob[byte_size]', file.size
-    data.append 'blob[content_type]', file.type
+    formData = new FormData
+    formData.append 'blob[filename]', file.name
+    formData.append 'blob[byte_size]', file.size
+    formData.append 'blob[content_type]', file.type
 
     loadNext = ->
       start = currentChunk * chunkSize
@@ -51,20 +50,19 @@
       if currentChunk < chunks
         loadNext()
       else
-        data.append 'blob[checksum]', spark.end().toString()
-        uploadFiles(data)
+        formData.append 'blob[checksum]', spark.end().toString()
+        uploadFiles(formData)
       return
 
     fileReader.onerror = ->
       console.warn 'oops, something went wrong.'
       return
 
-    uploadFiles = (data) ->
-      console.log data
+    uploadFiles = (formData) ->
       fetch('/rails/active_storage/direct_uploads',
         method: 'POST'
-        body: data
-      ).then (response) ->
+        body: formData
+      ).then((response) ->
         return response.json()
       ).then (directUploadDetails) ->
         fetch(directUploadDetails.url,
@@ -85,6 +83,7 @@ document.addEventListener 'DOMContentLoaded', ->
 
     input.addEventListener 'change', ->
       index = 0
-      while index < input.files.length
-        ActiveStorage.upload(input, input.files[index])
+      while index < @files.length
+        ActiveStorage.upload(input, @files[index])
+
         index++
