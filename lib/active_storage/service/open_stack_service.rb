@@ -23,9 +23,17 @@ class ActiveStorage::Service::OpenStackService < ActiveStorage::Service
       # larger than that is desired, we have to
       # segment the upload.
       file = container.files.create(key: key, body: io, etag: checksum)
+      file.reload
       puts file.inspect
+      puts "Base64 #{Digest::MD5.base64digest(file.body)}"
+      puts "Hex #{Digest::MD5.hexdigest(file.body)}"
       puts "The checksum #{checksum}"
       puts "The file checksum #{file.etag}"
+
+      if checksum.present? && Digest::MD5.base64digest(file.body) != checksum
+        raise ActiveStorage::IntegrityError
+        file.destroy
+      end
     end
   end
 
