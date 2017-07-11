@@ -22,3 +22,13 @@ gcs:
   }
   project:
   bucket:
+
+openstack:
+  service: OpenStack
+  container: "" #using OpenStack terminology equivalent to a bucket
+  openstack_auth_url: ""
+  openstack_api_key: ""
+  openstack_project_id: ""
+  openstack_username: ""
+  openstack_region: ""
+  connection_options: {} # optional
