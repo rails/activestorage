@@ -14,6 +14,8 @@ Gem::Specification.new do |s|
   s.add_dependency "actionpack", ">= 5.2.0.alpha"
   s.add_dependency "activejob", ">= 5.2.0.alpha"
 
+  s.add_dependency "mini_magick"
+
   s.add_development_dependency "bundler", "~> 1.15"
 
   s.files      = `git ls-files`.split("\n")
