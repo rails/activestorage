@@ -15,8 +15,8 @@ if SERVICE_CONFIGURATIONS[:s3]
       begin
         key  = SecureRandom.base58(24)
         data = "Something else entirely!"
-        direct_upload_url = @service.url_for_direct_upload(key, expires_in: 5.minutes)
 
+        direct_upload_url = @service.url_for_direct_upload(key, expires_in: 5.minutes)
         url   = URI.parse(direct_upload_url).to_s.split("?").first
         query = CGI::parse(URI.parse(direct_upload_url).query).collect { |(k, v)| [ k, v.first ] }.to_h
 
@@ -38,7 +38,11 @@ if SERVICE_CONFIGURATIONS[:s3]
     end
 
     test "signed URL generation" do
+<<<<<<< HEAD
       assert_match /rails-activestorage\.s3\.amazonaws\.com.*response-content-disposition=inline.*avatar\.png/,
+=======
+      assert_match /.+s3.+amazonaws.com.*response-content-disposition=inline.*avatar\.png/,
+>>>>>>> master
         @service.url(FIXTURE_KEY, expires_in: 5.minutes, disposition: :inline, filename: "avatar.png")
     end
   end
