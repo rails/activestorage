@@ -38,11 +38,7 @@ if SERVICE_CONFIGURATIONS[:s3]
     end
 
     test "signed URL generation" do
-<<<<<<< HEAD
-      assert_match /rails-activestorage\.s3\.amazonaws\.com.*response-content-disposition=inline.*avatar\.png/,
-=======
       assert_match /.+s3.+amazonaws.com.*response-content-disposition=inline.*avatar\.png/,
->>>>>>> master
         @service.url(FIXTURE_KEY, expires_in: 5.minutes, disposition: :inline, filename: "avatar.png")
     end
   end
