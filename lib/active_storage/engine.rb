@@ -44,6 +44,12 @@ module ActiveStorage
         configs =
           begin
             YAML.load(ERB.new(config_file.read).result) || {}
+
+          rescue NoMethodError => e
+            raise "YAML error occurred while parsing #{config_file}. " \
+                  "Please make sure you have set service settings inside config/secrets.yml " \
+                  "Error: #{e.message}"
+
           rescue Psych::SyntaxError => e
             raise "YAML syntax error occurred while parsing #{config_file}. " \
                   "Please note that YAML must be consistently indented using spaces. Tabs are not allowed. " \
