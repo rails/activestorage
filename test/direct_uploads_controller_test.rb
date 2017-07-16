@@ -12,6 +12,7 @@ if SERVICE_CONFIGURATIONS[:s3]
       @blob = create_blob
       @routes = Routes
       @controller = ActiveStorage::DirectUploadsController.new
+      @config = SERVICE_CONFIGURATIONS[:s3]
 
       @old_service = ActiveStorage::Blob.service
       ActiveStorage::Blob.service = ActiveStorage::Service.configure(:s3, SERVICE_CONFIGURATIONS)
@@ -27,7 +28,7 @@ if SERVICE_CONFIGURATIONS[:s3]
 
       details = JSON.parse(@response.body)
 
-      assert_match /#{SERVICE_CONFIGURATIONS[:s3][:bucket]}\.s3.amazonaws\.com/, details["url"]
+      assert_match /#{@config[:bucket]}\.s3.(\S+)?amazonaws\.com/, details["url"]
       assert_equal "hello.txt", GlobalID::Locator.locate_signed(details["sgid"]).filename.to_s
     end
   end
