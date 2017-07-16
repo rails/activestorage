@@ -44,8 +44,7 @@ if SERVICE_CONFIGURATIONS[:gcs]
       request["cache-control"] = "no-cache"
       request.body = data
 
-      response = http.request(request)
-      puts response.read_body
+      http.request(request)
     end
   end
 else
