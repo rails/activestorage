@@ -1,6 +1,5 @@
 require "service/shared_service_tests"
-require "net/http"
-require "uri"
+require "httparty"
 
 if SERVICE_CONFIGURATIONS[:gcs]
   class ActiveStorage::Service::GCSServiceTest < ActiveSupport::TestCase
@@ -14,7 +13,12 @@ if SERVICE_CONFIGURATIONS[:gcs]
         data = "Something else entirely!"
         direct_upload_url = @service.url_for_direct_upload(key, expires_in: 5.minutes, content_type: "text/plain", content_length: data.size)
 
-        write_to_url(data, direct_upload_url)
+        HTTParty.put(
+          direct_upload_url,
+          body: data,
+          headers: { "Content-Type" => "text/plain" },
+          debug_output: STDOUT
+        )
 
         assert_equal data, @service.download(key)
       ensure
@@ -29,22 +33,6 @@ if SERVICE_CONFIGURATIONS[:gcs]
 
         assert_equal url, @service.url(FIXTURE_KEY, expires_in: 2.minutes, disposition: :inline, filename: "test.txt")
       end
-    end
-
-    def write_to_url(data, url)
-      url = URI(url)
-
-      http = Net::HTTP.new(url.host, url.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-      request = Net::HTTP::Put.new(url)
-      request["content-type"] = "text/plain"
-      request["origin"] = "http://localhost:3000"
-      request["cache-control"] = "no-cache"
-      request.body = data
-
-      http.request(request)
     end
   end
 else
