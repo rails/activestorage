@@ -11,7 +11,6 @@ module ActiveStorage::Service::SharedServiceTests
     setup do
       @service = self.class.const_get(:SERVICE)
       @service.upload FIXTURE_KEY, StringIO.new(FIXTURE_DATA)
-      @config = SERVICE_CONFIGURATIONS
     end
 
     teardown do
