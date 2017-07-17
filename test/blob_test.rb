@@ -34,6 +34,13 @@ class ActiveStorage::BlobTest < ActiveSupport::TestCase
     end
   end
 
+  test "url with downsampling" do
+    blob = create_blob data: ActiveStorage::Service::SharedServiceTests::FIXTURE_DATA
+    assert_nothing_raised do
+      blob.url(size: '10x10')
+    end
+  end
+
   private
     def expected_url_for(blob, disposition: :inline)
       "/rails/active_storage/disk/#{ActiveStorage::VerifiedKeyWithExpiration.encode(blob.key, expires_in: 5.minutes)}/#{blob.filename}?disposition=#{disposition}"

@@ -58,6 +58,26 @@ class ActiveStorage::Service
     end
   end
 
+
+  def thumbnail_url(key, size: nil, **url_options)
+    thumbnail_key = key + (size || '')
+    if exist? thumbnail_key
+      url(thumbnail_key, **url_options)
+    else
+      fullsize_image = download key
+      upload thumbnail_key, downsampled(fullsize_image, size)
+      url(thumbnail_key, **url_options)
+    end
+  end
+
+  def downsampled(image_data, size)
+    require 'mini_magick'
+    image = MiniMagick::Image.read(image_data)
+    image.resize size
+    File.open(image.path)
+  end
+
+
   def upload(key, io, checksum: nil)
     raise NotImplementedError
   end

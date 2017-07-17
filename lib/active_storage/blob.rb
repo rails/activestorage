@@ -40,8 +40,8 @@ class ActiveStorage::Blob < ActiveRecord::Base
     ActiveStorage::Filename.new(self[:filename])
   end
 
-  def url(expires_in: 5.minutes, disposition: :inline)
-    service.url key, expires_in: expires_in, disposition: disposition, filename: filename
+  def url(expires_in: 5.minutes, disposition: :inline, size: nil)
+    service.thumbnail_url key, size: size, expires_in: expires_in, disposition: disposition, filename: filename
   end
 
   def url_for_direct_upload(expires_in: 5.minutes)
