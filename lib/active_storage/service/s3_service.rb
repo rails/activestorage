@@ -14,7 +14,7 @@ class ActiveStorage::Service::S3Service < ActiveStorage::Service
   def upload(key, io, checksum: nil)
     instrument :upload, key, checksum: checksum do
       begin
-        object_for(key).put(@upload_options.merge(body: io, content_md5: checksum))
+        object_for(key).put(upload_options.merge(body: io, content_md5: checksum))
       rescue Aws::S3::Errors::BadDigest
         raise ActiveStorage::IntegrityError
       end
