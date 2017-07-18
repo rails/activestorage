@@ -30,6 +30,20 @@ if SERVICE_CONFIGURATIONS[:s3]
       assert_match /#{SERVICE_CONFIGURATIONS[:s3][:bucket]}\.s3.(\S+)?amazonaws.com.*response-content-disposition=inline.*avatar\.png/,
         @service.url(FIXTURE_KEY, expires_in: 5.minutes, disposition: :inline, filename: "avatar.png")
     end
+
+    test "encrypt file with server_side_encryption upload option" do
+      skip "server_side_encryption option not supplied " unless @service.upload_options[:server_side_encryption]
+
+      begin
+        key  = SecureRandom.base58(24)
+        data = "Something else entirely!"
+        response = @service.upload(key, StringIO.new(data), checksum: Digest::MD5.base64digest(data))
+
+        assert_equal @service.upload_options[:server_side_encryption], response.server_side_encryption
+      ensure
+        @service.delete key
+      end
+    end
   end
 else
   puts "Skipping S3 Service tests because no S3 configuration was supplied"
