@@ -6,7 +6,7 @@ After reading this guide, you will know:
 
 * How to attach files to models.
 * How to upload files directly to cloud storage.
-* How to retrieve variants on attachment
+* How to retrieve variants on attachment.
 * How add a service for a new cloud service.
 
 --------------------------------------------------------------------------------
