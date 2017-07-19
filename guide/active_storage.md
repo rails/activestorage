@@ -6,6 +6,7 @@ After reading this guide, you will know:
 
 * How to attach files to models.
 * How to upload files directly to cloud storage.
+* How to retrieve variants on attachment
 * How add a service for a new cloud service.
 
 --------------------------------------------------------------------------------
@@ -89,3 +90,7 @@ class MessagesController < ApplicationController
   end
 end
 ```
+
+## Direct Uploads
+## Retrieve Variants of an Attachment
+## Add Support for Cloud Service
