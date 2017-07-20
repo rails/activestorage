@@ -61,13 +61,13 @@ class ActiveStorage::Service
 
   def thumbnail_url(key, size: nil, **url_options)
     thumbnail_key = key + (size || '')
-    if exist? thumbnail_key
-      url(thumbnail_key, **url_options)
-    else
-      fullsize_image = download key
-      upload thumbnail_key, downsampled(fullsize_image, size)
-      url(thumbnail_key, **url_options)
-    end
+    generate_thumbnail(key, size, thumbnail_key) unless exist? thumbnail_key
+    url(thumbnail_key, **url_options)
+  end
+
+  def generate_thumbnail(key, size)
+    fullsize_image = download key
+    upload thumbnail_key, downsampled(fullsize_image, size)
   end
 
   def downsampled(image_data, size)
