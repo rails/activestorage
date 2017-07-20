@@ -61,8 +61,9 @@ class ActiveStorage::Service::S3Service < ActiveStorage::Service
 
   def url(key, expires_in:, disposition:, filename:)
     instrument :url, key do |payload|
+      safe_filename = ActiveSupport::Inflector.transliterate(filename.to_s)
       generated_url = object_for(key).presigned_url :get, expires_in: expires_in,
-        response_content_disposition: "#{disposition}; filename=\"#{filename}\""
+        response_content_disposition: "#{disposition}; filename=\"#{safe_filename}\""
 
       payload[:url] = generated_url
 
