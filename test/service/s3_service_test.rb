@@ -31,7 +31,7 @@ if SERVICE_CONFIGURATIONS[:s3]
         @service.url(FIXTURE_KEY, expires_in: 5.minutes, disposition: :inline, filename: "avatar.png")
     end
 
-    test "encrypt file with server_side_encryption upload option" do
+    test "uploading with server-side encryption" do
       config      = {}
       config[:s3] = SERVICE_CONFIGURATIONS[:s3].merge \
         upload: { server_side_encryption: "AES256" }
