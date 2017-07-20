@@ -32,16 +32,20 @@ if SERVICE_CONFIGURATIONS[:s3]
     end
 
     test "encrypt file with server_side_encryption upload option" do
-      skip "server_side_encryption option not supplied " unless @service.upload_options[:server_side_encryption]
+      config      = {}
+      config[:s3] = SERVICE_CONFIGURATIONS[:s3].merge \
+        upload: { server_side_encryption: "AES256" }
+
+      sse_service = ActiveStorage::Service.configure(:s3, config)
 
       begin
         key  = SecureRandom.base58(24)
         data = "Something else entirely!"
-        response = @service.upload(key, StringIO.new(data), checksum: Digest::MD5.base64digest(data))
+        sse_service.upload(key, StringIO.new(data), checksum: Digest::MD5.base64digest(data))
 
-        assert_equal @service.upload_options[:server_side_encryption], response.server_side_encryption
+        assert_equal "AES256", sse_service.bucket.object(key).server_side_encryption
       ensure
-        @service.delete key
+        sse_service.delete key
       end
     end
   end
