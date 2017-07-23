@@ -43,9 +43,10 @@ class ActiveSupport::TestCase
     end
 
     def assert_same_image(fixture_filename, variant)
+      puts File.read(variant.service.send(:path_for, variant.key))
       assert_equal \
         File.binread(File.expand_path("../fixtures/files/#{fixture_filename}", __FILE__)),
-        File.binread(variant.service.send(:path_for, variant.key)).tap { |x| p x }
+        File.binread(variant.service.send(:path_for, variant.key))
     end
 end
 
