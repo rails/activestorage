@@ -44,8 +44,8 @@ class ActiveSupport::TestCase
 
     def assert_same_image(fixture_filename, variant)
       assert_equal \
-        File.binread(File.expand_path("../fixtures/files/#{fixture_filename}", __FILE__)),
-        File.binread(variant.service.send(:path_for, variant.key))
+        Digest::MD5.hexdigest(File.binread(File.expand_path("../fixtures/files/#{fixture_filename}", __FILE__))),
+        Digest::MD5.hexdigest(File.binread(variant.service.send(:path_for, variant.key))).tap { |x| p x }
     end
 end
 
