@@ -26,7 +26,7 @@ end
 require "active_storage/service/disk_service"
 require "tmpdir"
 ActiveStorage::Blob.service = ActiveStorage::Service::DiskService.new(root: Dir.mktmpdir("active_storage_tests"))
-ActiveStorage::Service.logger = ActiveSupport::Logger.new(STDOUT)
+# ActiveStorage::Service.logger = ActiveSupport::Logger.new(STDOUT)
 
 ActiveStorage.verifier = ActiveSupport::MessageVerifier.new("Testing")
 
@@ -44,8 +44,8 @@ class ActiveSupport::TestCase
 
     def assert_same_image(fixture_filename, variant)
       assert_equal \
-        Digest::MD5.hexdigest(File.binread(File.expand_path("../fixtures/files/#{fixture_filename}", __FILE__))),
-        Digest::MD5.hexdigest(File.binread(variant.service.send(:path_for, variant.key))).tap { |x| p x }
+        File.binread(File.expand_path("../fixtures/files/#{fixture_filename}", __FILE__)),
+        File.binread(variant.service.send(:path_for, variant.key)).tap { |x| p x }
     end
 end
 
