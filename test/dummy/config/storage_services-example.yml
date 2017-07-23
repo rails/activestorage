@@ -1,4 +1,8 @@
-# Copy this file to configurations.yml and edit the credentials to match your IAM test account and bucket
+# Copy this file to storage_services.yml and edit the credentials to match your IAM test account and bucket
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
+
 s3:
   service: S3
   access_key_id:

@@ -1,14 +1,9 @@
 require "test_helper"
 require "database/setup"
 
-require "active_storage/direct_uploads_controller"
-
 if SERVICE_CONFIGURATIONS[:s3]
-  class ActiveStorage::S3DirectUploadsControllerTest < ActionController::TestCase
+  class ActiveStorage::S3DirectUploadsControllerTest < ActionDispatch::IntegrationTest
     setup do
-      @routes = Routes
-      @controller = ActiveStorage::DirectUploadsController.new
-
       @old_service = ActiveStorage::Blob.service
       ActiveStorage::Blob.service = ActiveStorage::Service.configure(:s3, SERVICE_CONFIGURATIONS)
     end
@@ -18,8 +13,8 @@ if SERVICE_CONFIGURATIONS[:s3]
     end
 
     test "creating new direct upload" do
-      post :create, params: { blob: {
-          filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
+      post rails_direct_uploads_url, params: { blob: {
+        filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
 
       JSON.parse(@response.body).tap do |details|
         assert_match(/#{SERVICE_CONFIGURATIONS[:s3][:bucket]}\.s3.(\S+)?amazonaws\.com/, details["upload_to_url"])
@@ -32,10 +27,8 @@ else
 end
 
 if SERVICE_CONFIGURATIONS[:gcs]
-  class ActiveStorage::GCSDirectUploadsControllerTest < ActionController::TestCase
+  class ActiveStorage::GCSDirectUploadsControllerTest < ActionDispatch::IntegrationTest
     setup do
-      @routes = Routes
-      @controller = ActiveStorage::DirectUploadsController.new
       @config = SERVICE_CONFIGURATIONS[:gcs]
 
       @old_service = ActiveStorage::Blob.service
@@ -47,8 +40,8 @@ if SERVICE_CONFIGURATIONS[:gcs]
     end
 
     test "creating new direct upload" do
-      post :create, params: { blob: {
-          filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
+      post rails_direct_uploads_url, params: { blob: {
+        filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
 
       JSON.parse(@response.body).tap do |details|
         assert_match %r{storage\.googleapis\.com/#{@config[:bucket]}}, details["upload_to_url"]
