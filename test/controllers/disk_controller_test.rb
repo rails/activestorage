@@ -5,7 +5,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
   test "showing blob inline" do
     blob = create_blob
 
-    get rails_disk_blob_url(
+    get rails_disk_service_url(
       filename: "hello.txt",
       content_type: blob.content_type,
       encoded_key: ActiveStorage.verifier.generate(blob.key, expires_in: 5.minutes, purpose: :blob_key)
@@ -18,7 +18,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
   test "sending blob as attachment" do
     blob = create_blob
 
-    get rails_disk_blob_url(
+    get rails_disk_service_url(
       filename: blob.filename,
       content_type: blob.content_type,
       encoded_key: ActiveStorage.verifier.generate(blob.key, expires_in: 5.minutes, purpose: :blob_key),
@@ -43,7 +43,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
       purpose: :blob_token
     )
 
-    put update_rails_disk_blob_url(encoded_token: token), params: data, headers: { "Content-Type" => "text/plain" }
+    put update_rails_disk_service_url(encoded_token: token), params: data, headers: { "Content-Type" => "text/plain" }
 
     assert_response :no_content
     assert_equal data, blob.download
@@ -64,7 +64,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
       purpose: :blob_token
     )
 
-    put update_rails_disk_blob_url(encoded_token: token), params: { body: data }
+    put update_rails_disk_service_url(encoded_token: token), params: { body: data }
 
     assert_response :unprocessable_entity
     assert_not blob.service.exist?(blob.key)
