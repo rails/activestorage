@@ -43,7 +43,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
       purpose: :blob_token
     )
 
-    put update_rails_disk_blob_url(encoded_token: token), params: data
+    put update_rails_disk_blob_url(encoded_token: token), params: data, headers: { "Content-Type" => "text/plain" }
 
     assert_response :no_content
     assert_equal data, blob.download
@@ -64,7 +64,7 @@ class ActiveStorage::DiskControllerTest < ActionDispatch::IntegrationTest
       purpose: :blob_token
     )
 
-    put update_rails_disk_blob_url(encoded_token: token), params: data
+    put update_rails_disk_blob_url(encoded_token: token), params: { body: data }
 
     assert_response :unprocessable_entity
     assert_not blob.service.exist?(blob.key)

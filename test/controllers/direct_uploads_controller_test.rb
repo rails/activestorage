@@ -16,7 +16,7 @@ if SERVICE_CONFIGURATIONS[:s3]
       post rails_direct_uploads_url, params: { blob: {
         filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
 
-      JSON.parse(@response.body).tap do |details|
+      response.parsed_body.tap do |details|
         assert_match(/#{SERVICE_CONFIGURATIONS[:s3][:bucket]}\.s3.(\S+)?amazonaws\.com/, details["upload_to_url"])
         assert_equal "hello.txt", ActiveStorage::Blob.find_signed(details["signed_blob_id"]).filename.to_s
       end
@@ -43,7 +43,7 @@ if SERVICE_CONFIGURATIONS[:gcs]
       post rails_direct_uploads_url, params: { blob: {
         filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
 
-      JSON.parse(@response.body).tap do |details|
+      @response.parsed_body.tap do |details|
         assert_match %r{storage\.googleapis\.com/#{@config[:bucket]}}, details["upload_to_url"]
         assert_equal "hello.txt", ActiveStorage::Blob.find_signed(details["signed_blob_id"]).filename.to_s
       end
@@ -53,17 +53,12 @@ else
   puts "Skipping GCS Direct Upload tests because no GCS configuration was supplied"
 end
 
-class ActiveStorage::DiskDirectUploadsControllerTest < ActionController::TestCase
-  setup do
-    @routes = Routes
-    @controller = ActiveStorage::DirectUploadsController.new
-  end
-
+class ActiveStorage::DiskDirectUploadsControllerTest < ActionDispatch::IntegrationTest
   test "creating new direct upload" do
-    post :create, params: { blob: {
-        filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
+    post rails_direct_uploads_url, params: { blob: {
+      filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
 
-    JSON.parse(@response.body).tap do |details|
+    @response.parsed_body.tap do |details|
       assert_match /rails\/active_storage\/disk/, details["upload_to_url"]
       assert_equal "hello.txt", ActiveStorage::Blob.find_signed(details["signed_blob_id"]).filename.to_s
     end
