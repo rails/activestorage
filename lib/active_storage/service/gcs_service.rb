@@ -69,7 +69,7 @@ class ActiveStorage::Service::GCSService < ActiveStorage::Service
   end
 
   def headers_for_direct_upload(key, content_type:, checksum:, **)
-    { "Content-Type": content_type, "Content-MD5" => checksum }
+    { "Content-Type" => content_type, "Content-MD5" => checksum }
   end
 
   private

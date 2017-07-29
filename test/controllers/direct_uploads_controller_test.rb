@@ -25,7 +25,7 @@ if SERVICE_CONFIGURATIONS[:s3]
         assert_equal checksum, details["checksum"]
         assert_equal "text/plain", details["content_type"]
         assert_match /#{SERVICE_CONFIGURATIONS[:s3][:bucket]}\.s3.(\S+)?amazonaws\.com/, details["direct_upload"]["url"]
-        assert_equal({ "Content-Type" => "text/plain", "Content-MD5": blob.checksum }, details["direct_upload"]["headers"])
+        assert_equal({ "Content-Type" => "text/plain", "Content-MD5" => checksum }, details["direct_upload"]["headers"])
       end
     end
   end
