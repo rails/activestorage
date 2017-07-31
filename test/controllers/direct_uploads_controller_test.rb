@@ -81,12 +81,19 @@ if SERVICE_CONFIGURATIONS[:azure]
     end
 
     test "creating new direct upload" do
+      checksum = Digest::MD5.base64digest("Hello")
+
       post rails_direct_uploads_url, params: { blob: {
-        filename: "hello.txt", byte_size: 6, checksum: Digest::MD5.base64digest("Hello"), content_type: "text/plain" } }
+        filename: "hello.txt", byte_size: 6, checksum: checksum, content_type: "text/plain" } }
 
       @response.parsed_body.tap do |details|
-        assert_match %r{#{@config[:storage_account_name]}\.blob\.core\.windows\.net/#{@config[:container]}}, details["upload_to_url"]
-        assert_equal "hello.txt", ActiveStorage::Blob.find_signed(details["signed_blob_id"]).filename.to_s
+        assert_equal ActiveStorage::Blob.find(details["id"]), ActiveStorage::Blob.find_signed(details["signed_id"])
+        assert_equal "hello.txt", details["filename"]
+        assert_equal 6, details["byte_size"]
+        assert_equal checksum, details["checksum"]
+        assert_equal "text/plain", details["content_type"]
+        assert_match %r{#{@config[:storage_account_name]}\.blob\.core\.windows\.net/#{@config[:container]}}, details["direct_upload"]["url"]
+        assert_equal({ "Content-Type" => "text/plain", "Content-MD5" => checksum, "x-ms-blob-type" => "BlockBlob" }, details["direct_upload"]["headers"])
       end
     end
   end

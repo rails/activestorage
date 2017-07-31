@@ -80,6 +80,10 @@ class ActiveStorage::Service::AzureService < ActiveStorage::Service
     end
   end
 
+  def headers_for_direct_upload(key, content_type:, checksum:, **)
+    { "Content-Type" => content_type, "Content-MD5" => checksum, "x-ms-blob-type" => "BlockBlob" }
+  end
+
   private
     def url_for(key)
       "#{path}/#{container}/#{key}"
