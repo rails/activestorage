@@ -65,7 +65,6 @@ class ActiveStorage::Variant
     service.url key, expires_in: expires_in, disposition: disposition, filename: blob.filename, content_type: blob.content_type
   end
 
-
   private
     def processed?
       service.exist?(key)

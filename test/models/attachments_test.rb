@@ -58,7 +58,6 @@ class ActiveStorage::AttachmentsTest < ActiveSupport::TestCase
     end
   end
 
-
   test "attach existing blobs" do
     @user.highlights.attach create_blob(filename: "funky.jpg"), create_blob(filename: "wonky.jpg")
 
@@ -95,7 +94,6 @@ class ActiveStorage::AttachmentsTest < ActiveSupport::TestCase
     assert_equal @user.highlights_attachments.collect(&:blob).sort, @user.highlights_blobs.sort
     assert_equal "town.jpg", @user.highlights_attachments.first.blob.filename.to_s
   end
-
 
   test "purge attached blobs" do
     @user.highlights.attach create_blob(filename: "funky.jpg"), create_blob(filename: "wonky.jpg")
