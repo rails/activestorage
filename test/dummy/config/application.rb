@@ -1,4 +1,4 @@
-require_relative 'boot'
+require_relative "boot"
 
 require "rails"
 require "active_model/railtie"
@@ -11,7 +11,6 @@ require "sprockets/railtie"
 #require "rails/test_unit/railtie"
 #require "action_cable/engine"
 
-
 Bundler.require(*Rails.groups)
 require "active_storage"
 
@@ -22,4 +21,3 @@ module Dummy
     config.active_storage.service = :local
   end
 end
-
